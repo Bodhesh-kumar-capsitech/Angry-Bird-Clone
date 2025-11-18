@@ -12,7 +12,7 @@ public class BirdController : MonoBehaviour
     private Vector3 currPos;
     private Vector3 direction;
     [SerializeField] private float speed = 800.0f;
-    [SerializeField] private float maxDrag = 3.0f;
+    [SerializeField] private float maxDrag = 4.0f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -22,18 +22,10 @@ public class BirdController : MonoBehaviour
         startPos = rb.position;
 
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     void OnMouseDown()
     {
         sprite.color = Color.red;
     }
-
     void OnMouseUp()
     {
         currPos = rb.position;
