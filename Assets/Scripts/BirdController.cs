@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
@@ -13,6 +14,13 @@ public class BirdController : MonoBehaviour
     private Vector3 direction;
     [SerializeField] private float speed = 800.0f;
     [SerializeField] private float maxDrag = 4.0f;
+    private TrajectoryPredictor predict;
+    private Vector2 predictPos;
+
+    void Awake()
+    {
+        predict = TrajectoryPredictor.instance;
+    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -20,6 +28,7 @@ public class BirdController : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         rb.bodyType = RigidbodyType2D.Kinematic;
         startPos = rb.position;
+        predictPos = transform.position;
 
     }
     void OnMouseDown()
@@ -36,30 +45,33 @@ public class BirdController : MonoBehaviour
         rb.AddForce(speed * direction);
 
         sprite.color = Color.white;
+        predict.Hide();
     }
 
-    void OnMouseDrag()
-    {
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 desirePos = mousePos;
+   void OnMouseDrag()
+{
+    Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    mousePos.z = 0;
 
-        float distance = Vector2.Distance(desirePos, startPos);
+    // Calculate direction and distance
+     direction = mousePos - startPos;
+    float distance = direction.magnitude;
 
-        if (distance > maxDrag)
-        {
-            direction = desirePos - startPos;
-            direction.Normalize();
-            desirePos = startPos + (direction * maxDrag);
-        }
+    // Clamp distance
+    float clampedDistance = Mathf.Clamp(distance, 0, maxDrag);
 
-        if (desirePos.x > startPos.x)
-        {
-            desirePos.x = startPos.x;
-        }
+    Vector3 desirePos = startPos + direction.normalized * clampedDistance;
 
-        // transform.position = new Vector3(mousePos.x,mousePos.y,transform.position.z);
-        rb.position = desirePos;
-    }
+    desirePos.x = Mathf.Min(desirePos.x, startPos.x);
+
+    rb.position = desirePos;
+
+    Vector3 launchDirection = startPos - desirePos;
+    Vector3 velocity = launchDirection * speed;
+    predict.DrawTrajectory(desirePos,velocity);
+        print("Start position is: " + desirePos);
+
+}
 
     void OnCollisionEnter2D(Collision2D collision)
     {
