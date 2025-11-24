@@ -52,7 +52,7 @@ public class BirdController : MonoBehaviour
     }
 
    void OnMouseDrag()
-{
+   {
     Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     mousePos.z = 0;
 
@@ -78,7 +78,7 @@ public class BirdController : MonoBehaviour
     predict.DrawTrajectory(rb.position,velocity);
         print("Start position is: " + desirePos);
 
-}
+   }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
