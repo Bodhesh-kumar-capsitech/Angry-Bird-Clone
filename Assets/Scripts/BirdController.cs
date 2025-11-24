@@ -1,14 +1,10 @@
-using System;
 using System.Collections;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class BirdController : MonoBehaviour
 {
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
-
     private Vector3 startPos;
     private Vector3 currPos;
     private Vector3 direction;
@@ -16,9 +12,13 @@ public class BirdController : MonoBehaviour
     [SerializeField] private float maxDrag = 4.0f;
     private TrajectoryPredictor predict;
     private Vector2 predictPos;
-
+    private CameraController controller;
+    public bool isDragging = false;
+    public static BirdController instance;
     void Awake()
     {
+        instance = this;
+        controller = CameraController.instance;
         predict = TrajectoryPredictor.instance;
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -33,10 +33,13 @@ public class BirdController : MonoBehaviour
     }
     void OnMouseDown()
     {
+        isDragging = true;
         sprite.color = Color.red;
     }
     void OnMouseUp()
     {
+        isDragging = false;
+        SlingshotRubber.instance.HideBands();
         currPos = rb.position;
         direction = startPos - currPos;
         direction.Normalize();
@@ -53,9 +56,13 @@ public class BirdController : MonoBehaviour
     Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     mousePos.z = 0;
 
+        if(isDragging == true)
+        {
+            SlingshotRubber.instance.DrawBands();
+        }     
     // Calculate direction and distance
      direction = mousePos - startPos;
-    float distance = direction.magnitude;
+    float distance = Vector2.Distance(mousePos,startPos);
 
     // Clamp distance
     float clampedDistance = Mathf.Clamp(distance, 0, maxDrag);
@@ -67,8 +74,8 @@ public class BirdController : MonoBehaviour
     rb.position = desirePos;
 
     Vector3 launchDirection = startPos - desirePos;
-    Vector3 velocity = launchDirection * speed;
-    predict.DrawTrajectory(desirePos,velocity);
+    Vector3 velocity = (launchDirection * speed)/rb.mass * Time.fixedDeltaTime;
+    predict.DrawTrajectory(rb.position,velocity);
         print("Start position is: " + desirePos);
 
 }
@@ -84,5 +91,6 @@ public class BirdController : MonoBehaviour
         rb.position = startPos;
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.linearVelocity = Vector2.zero;
+        controller.ResetCamera();
     }
 }
