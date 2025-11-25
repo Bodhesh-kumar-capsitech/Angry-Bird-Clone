@@ -2460,18 +2460,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &3371220178928428063
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3812104596664753061}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b7dd4d7b07c01149ae50517bbd4cfb5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!61 &3414366191452962778
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2530,7 +2518,6 @@ GameObject:
   - component: {fileID: 7515852935199913407}
   - component: {fileID: 6163494420295896921}
   - component: {fileID: 3025077787210768377}
-  - component: {fileID: 3371220178928428063}
   m_Layer: 0
   m_Name: Bird3_Blue
   m_TagString: Untagged
