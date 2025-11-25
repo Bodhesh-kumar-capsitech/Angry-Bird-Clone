@@ -76,7 +76,6 @@ public class BirdController : MonoBehaviour
     Vector3 launchDirection = startPos - desirePos;
     Vector3 velocity = (launchDirection * speed)/rb.mass * Time.fixedDeltaTime;
     predict.DrawTrajectory(rb.position,velocity);
-        print("Start position is: " + desirePos);
 
    }
 

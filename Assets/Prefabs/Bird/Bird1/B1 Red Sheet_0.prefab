@@ -328,3 +328,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 800
+  maxDrag: 4
+  isDragging: 0
