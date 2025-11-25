@@ -5,7 +5,7 @@ public class LevelLoader : MonoBehaviour
     public LevelData levelData;  
     public int levelIndex;        // which level to load
     public static LevelLoader loader;
-    private Vector3 levelSpawnPos = new Vector3(4,0,0);
+    private Vector3 levelSpawnPos = new Vector3(0,-3.2f,0);
 
     void Awake()
     {
