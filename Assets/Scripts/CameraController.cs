@@ -3,7 +3,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public Transform target; 
-    public float smoothSpeed = 0.125f;
+    public float smoothSpeed = 0.200f;
     Vector3 smoothedPosition;
     public Vector3 offset; 
     public Vector3 originalPosition;

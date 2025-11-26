@@ -5,15 +5,19 @@ public class BirdController : MonoBehaviour
 {
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
-    private Vector3 startPos;
-    private Vector3 currPos;
-    private Vector3 direction;
-    [SerializeField] private float speed = 800.0f;
-    [SerializeField] private float maxDrag = 4.0f;
+    private Vector2 startPos;
+    private Vector2 currPos;
+    private Vector2 direction;
+    [SerializeField] private float speed = 40.0f;
+    [SerializeField] private float maxDrag = 2.0f;
+    private float downRange = 7.2f;
+    private float rightRange = 39.0f;
+    private float leftRange = 14.0f;
     private TrajectoryPredictor predict;
     private Vector2 predictPos;
     private CameraController controller;
     public bool isDragging = false;
+    private int maxBirdSpawnCount = 5;
     public static BirdController instance;
     void Awake()
     {
@@ -31,6 +35,15 @@ public class BirdController : MonoBehaviour
         predictPos = transform.position;
 
     }
+    void Update()
+    {
+        if(transform.position.y < -downRange || transform.position.x > rightRange || transform.position.x < -leftRange)
+        {
+            StartCoroutine(Resetdelay());
+        }
+
+    }
+
     void OnMouseDown()
     {
         isDragging = true;
@@ -42,19 +55,16 @@ public class BirdController : MonoBehaviour
         SlingshotRubber.instance.HideBands();
         currPos = rb.position;
         direction = startPos - currPos;
-        direction.Normalize();
         rb.bodyType = RigidbodyType2D.Dynamic;
-
-        rb.AddForce(speed * direction);
-
+        // rb.AddForce(speed * direction);
+        rb.linearVelocity = speed * direction;
         sprite.color = Color.white;
         predict.Hide();
     }
 
    void OnMouseDrag()
    {
-    Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    mousePos.z = 0;
+    Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         if(isDragging == true)
         {
@@ -67,20 +77,23 @@ public class BirdController : MonoBehaviour
     // Clamp distance
     float clampedDistance = Mathf.Clamp(distance, 0, maxDrag);
 
-    Vector3 desirePos = startPos + direction.normalized * clampedDistance;
+    Vector2 desirePos = startPos + direction.normalized * clampedDistance;
 
     desirePos.x = Mathf.Min(desirePos.x, startPos.x);
 
     rb.position = desirePos;
 
-    Vector3 launchDirection = startPos - desirePos;
-    Vector3 velocity = (launchDirection * speed)/rb.mass * Time.fixedDeltaTime;
-    predict.DrawTrajectory(rb.position,velocity);
+    Vector2 launchDirection = startPos - desirePos;
+    // Vector3 velocity = (launchDirection * speed)/rb.mass * Time.fixedDeltaTime;
+    Vector3 velocity = launchDirection * speed;
+    predict.DrawTrajectory(rb.position,velocity,rb.gravityScale);
 
    }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        // birdSpawnCount ++;
+        // print("Bird spawn count is: " + birdSpawnCount);
         StartCoroutine(Resetdelay());
     }
 

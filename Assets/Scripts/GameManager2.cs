@@ -8,6 +8,8 @@ public class GameManager2 : MonoBehaviour
     [SerializeField] private GameObject playButton;
     [SerializeField] private GameObject pauseButton;
     [SerializeField] private GameObject exitButton;
+    [SerializeField] private GameObject replayButton;
+    [SerializeField] private GameObject gameOverPannel;
 
 
     private GameObject[] enemies;
@@ -15,6 +17,7 @@ public class GameManager2 : MonoBehaviour
     public static GameManager2 manager;
     private bool isLevelCompleted = false;
     private bool isPaused = false;
+    private bool isGameOver = false;
 
 
 
@@ -36,7 +39,7 @@ public class GameManager2 : MonoBehaviour
             isLevelCompleted = false;
         }
 
-        if(isLevelCompleted == true || isPaused == true) 
+        if(isLevelCompleted == true || isPaused == true || isGameOver == true) 
         {
            Time.timeScale = 0;   
         }
@@ -49,6 +52,10 @@ public class GameManager2 : MonoBehaviour
     {
         isLevelCompleted = true;
         levelCompletePannel.gameObject.SetActive(true);
+        playButton.gameObject.SetActive(false);
+        pauseButton.gameObject.SetActive(false);
+        exitButton.gameObject.SetActive(false);
+        gameOverPannel.gameObject.SetActive(false);
     }
 
     public void OnReplay()
@@ -57,6 +64,8 @@ public class GameManager2 : MonoBehaviour
         LevelLoader.loader.levelIndex = lastLevelIndex;
         SceneManager.LoadScene(1);
         levelCompletePannel.gameObject.SetActive(false);
+        gameOverPannel.gameObject.SetActive(false);
+
     }
 
     public void OnNext()
@@ -66,11 +75,15 @@ public class GameManager2 : MonoBehaviour
     //    LevelLoader.loader.levelIndex = currLevelIndex;
        SceneManager.LoadScene(1);
        levelCompletePannel.gameObject.SetActive(false);
+        gameOverPannel.gameObject.SetActive(false);
+
     }
 
     public void OnHome()
     {
         SceneManager.LoadScene(0);
+        gameOverPannel.gameObject.SetActive(false);
+
     }
 
     public void OnPause()
@@ -78,7 +91,9 @@ public class GameManager2 : MonoBehaviour
         isPaused = true;
         pauseButton.gameObject.SetActive(false);
         playButton.gameObject.SetActive(true);
+        replayButton.gameObject.SetActive(true);
         exitButton.gameObject.SetActive(true);
+        gameOverPannel.gameObject.SetActive(false);
     }
 
     public void OnPlay()
@@ -86,7 +101,9 @@ public class GameManager2 : MonoBehaviour
         isPaused = false;
         pauseButton.gameObject.SetActive(true);
         playButton.gameObject.SetActive(false);
+        replayButton.gameObject.SetActive(false);
         exitButton.gameObject.SetActive(false);
+        gameOverPannel.gameObject.SetActive(false);
     }
 
     public void OnExit()
@@ -98,6 +115,12 @@ public class GameManager2 : MonoBehaviour
             // Quits the game application
             Application.Quit();
         #endif        
+    }
+
+    public void OnGameOver()
+    {
+        isGameOver = true;
+        gameOverPannel.gameObject.SetActive(true);
     }
 
 }

@@ -17,9 +17,8 @@ public class TrajectoryPredictor : MonoBehaviour
         line = GetComponent<LineRenderer>();
         line.positionCount = 0;
     }
-    public void DrawTrajectory(Vector2 startPos,Vector2 startVelocity)
+    public void DrawTrajectory(Vector2 startPos,Vector2 startVelocity,float gravityScale)
     {
-        float gravityScale = 1.0f;
         line.positionCount = pointCount;
             Vector2 g = Physics2D.gravity * gravityScale;
         for(int i=0;i< pointCount;i++)
